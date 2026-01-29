@@ -1,5 +1,5 @@
 import { RequiredDataFromCollectionSlug } from 'payload'
-
+//@ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'pa... Remove this comment to see the full error message
 export const contactForm: RequiredDataFromCollectionSlug<'forms'> = {
   confirmationMessage: {
     root: {

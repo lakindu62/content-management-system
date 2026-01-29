@@ -49,6 +49,7 @@ export const seed = async ({
       payload.updateGlobal({
         slug: global,
         data: {
+          //@ts-expect-error global types are not yet fully supported
           navItems: [],
         },
         depth: 0,
@@ -99,6 +100,7 @@ export const seed = async ({
   ])
 
   const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
+    //@ts-expect-error payload types do not yet support create return type
     payload.create({
       collection: 'users',
       data: {
@@ -245,6 +247,7 @@ export const seed = async ({
     payload.updateGlobal({
       slug: 'footer',
       data: {
+        //@ts-expect-error global types are not yet fully supported
         navItems: [
           {
             link: {

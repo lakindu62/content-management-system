@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArrayField, FieldHook, TypeWithID, ValidateOptions } from 'payload'
+import { ArrayField, FieldHook, TypeWithID, UploadField, ValidateOptions } from 'payload'
 
 export interface ImageValidationConfig {
   minWidth?: number
@@ -120,7 +120,10 @@ export const validateSingleImage = async (
 
 export const validateImagesOnPublish = (validationConfig: ImageValidationConfig) => {
   // 1. Change 'val' to 'unknown' to match Payload's signature
-  return async (val: unknown, options: ValidateOptions<unknown, unknown, ArrayField, unknown>) => {
+  return async (
+    val: unknown,
+    options: ValidateOptions<unknown, unknown, ArrayField | UploadField, unknown>,
+  ) => {
     // 2. Cast 'val' to your expected type for internal logic
     const value = val as string | string[] | null | undefined
 

@@ -5,7 +5,6 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
   slug: 'home',
   _status: 'published',
   hero: {
-    // @ts-expect-error - homeHero type exists in config but not yet in generated types
     type: 'homeHero',
     media: null, // Media will need to be added through the admin or seed script
     richText: {
