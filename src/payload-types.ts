@@ -77,6 +77,7 @@ export interface Config {
     resources: Resource;
     industries: Industry;
     'resource-categories': ResourceCategory;
+    careers: Career;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -104,6 +105,7 @@ export interface Config {
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
     industries: IndustriesSelect<false> | IndustriesSelect<true>;
     'resource-categories': ResourceCategoriesSelect<false> | ResourceCategoriesSelect<true>;
+    careers: CareersSelect<false> | CareersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -202,7 +204,21 @@ export interface Page {
       };
       [k: string]: unknown;
     } | null;
-    heroTitle?: string | null;
+    heroTitle?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
     heroDescription?: string | null;
     heroImage?: (string | null) | Media;
     statistics?:
@@ -260,6 +276,11 @@ export interface Page {
     | CaseStudiesGridBlock
     | IndustryRowBlock
     | InquiriesBlock
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'careerRowBlock';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -1240,10 +1261,7 @@ export interface Resource {
    * Main title for this resource collection
    */
   title: string;
-  /**
-   * Optional description for this resource
-   */
-  description?: string | null;
+  relatedResourceCategory: (string | ResourceCategory)[];
   pdfs: {
     /**
      * Title/name for this PDF
@@ -1257,14 +1275,8 @@ export interface Resource {
      * Optional description for this PDF
      */
     description?: string | null;
-    /**
-     * Optional file size (e.g., "2.5 MB")
-     */
-    fileSize?: string | null;
     id?: string | null;
   }[];
-  category?: ('guides' | 'whitepapers' | 'reports' | 'case-studies' | 'brochures' | 'other') | null;
-  status: 'draft' | 'published';
   publishedDate?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1277,8 +1289,13 @@ export interface Resource {
 export interface ResourceCategory {
   id: string;
   title: string;
-  description?: string | null;
-  image?: (string | null) | Media;
+  description: string;
+  cardImage: string | Media;
+  heroGallery: {
+    image: string | Media;
+    id?: string | null;
+  }[];
+  relatedResources?: (string | Resource)[] | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -1286,6 +1303,62 @@ export interface ResourceCategory {
   slug: string;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers".
+ */
+export interface Career {
+  id: string;
+  /**
+   * Job title (e.g., Senior Software Engineer)
+   */
+  title: string;
+  /**
+   * URL-friendly version of the job title
+   */
+  slug: string;
+  /**
+   * Department (e.g., Engineering, Marketing, Sales)
+   */
+  department: string;
+  /**
+   * Job location (e.g., Remote, New York, London)
+   */
+  location: string;
+  /**
+   * Position type (e.g., Full-time, Part-time, Contract)
+   */
+  position: string;
+  /**
+   * Full job description, responsibilities, requirements, etc.
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1518,6 +1591,10 @@ export interface PayloadLockedDocument {
         value: string | ResourceCategory;
       } | null)
     | ({
+        relationTo: 'careers';
+        value: string | Career;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1643,6 +1720,12 @@ export interface PagesSelect<T extends boolean = true> {
         caseStudiesGrid?: T | CaseStudiesGridBlockSelect<T>;
         industryRowBlock?: T | IndustryRowBlockSelect<T>;
         inquiriesBlock?: T | InquiriesBlockSelect<T>;
+        careerRowBlock?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -2128,18 +2211,15 @@ export interface CaseStudiesSelect<T extends boolean = true> {
  */
 export interface ResourcesSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
+  relatedResourceCategory?: T;
   pdfs?:
     | T
     | {
         pdfTitle?: T;
         file?: T;
         description?: T;
-        fileSize?: T;
         id?: T;
       };
-  category?: T;
-  status?: T;
   publishedDate?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2192,11 +2272,40 @@ export interface IndustriesSelect<T extends boolean = true> {
 export interface ResourceCategoriesSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  image?: T;
+  cardImage?: T;
+  heroGallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  relatedResources?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers_select".
+ */
+export interface CareersSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  department?: T;
+  location?: T;
+  position?: T;
+  content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2790,6 +2899,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'industries';
           value: string | Industry;
+        } | null)
+      | ({
+          relationTo: 'careers';
+          value: string | Career;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

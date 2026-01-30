@@ -7,7 +7,11 @@ import { BidirectionalConfig } from '.'
  */
 function normalizeToIds(relationships: any[] | undefined): string[] {
   if (!relationships) return []
-
+  // Handle single relationship (not an array)
+  if (!Array.isArray(relationships)) {
+    const id = typeof relationships === 'string' ? relationships : (relationships as any).id
+    return id ? [id] : []
+  }
   return relationships.map((item: any) => (typeof item === 'string' ? item : item.id))
 }
 

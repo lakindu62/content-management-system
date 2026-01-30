@@ -1,8 +1,9 @@
 import type { CollectionConfig } from 'payload'
-import { anyone } from '@/access/anyone'
+
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { canDeleteContent } from '@/access/roles'
+import { createBidirectionalHooks } from '../Hooks/BidirectionalHook'
 
 export const Resources: CollectionConfig = {
   slug: 'resources',
@@ -10,6 +11,10 @@ export const Resources: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'status', 'createdAt'],
     group: 'Content',
+  },
+  defaultPopulate: {
+    pdfs: true,
+    title: true,
   },
   access: {
     create: authenticated,
@@ -27,11 +32,12 @@ export const Resources: CollectionConfig = {
       },
     },
     {
-      name: 'description',
-      type: 'textarea',
-      admin: {
-        description: 'Optional description for this resource',
-      },
+      name: 'relatedResourceCategory',
+      type: 'relationship',
+      relationTo: 'resource-categories',
+      required: true,
+      hasMany: true,
+      // Remove the hooks from here
     },
     {
       name: 'pdfs',
@@ -67,42 +73,7 @@ export const Resources: CollectionConfig = {
             description: 'Optional description for this PDF',
           },
         },
-        {
-          name: 'fileSize',
-          type: 'text',
-          admin: {
-            description: 'Optional file size (e.g., "2.5 MB")',
-          },
-        },
       ],
-    },
-    {
-      name: 'category',
-      type: 'select',
-      options: [
-        { label: 'Guides', value: 'guides' },
-        { label: 'Whitepapers', value: 'whitepapers' },
-        { label: 'Reports', value: 'reports' },
-        { label: 'Case Studies', value: 'case-studies' },
-        { label: 'Brochures', value: 'brochures' },
-        { label: 'Other', value: 'other' },
-      ],
-      admin: {
-        position: 'sidebar',
-      },
-    },
-    {
-      name: 'status',
-      type: 'select',
-      options: [
-        { label: 'Draft', value: 'draft' },
-        { label: 'Published', value: 'published' },
-      ],
-      defaultValue: 'draft',
-      required: true,
-      admin: {
-        position: 'sidebar',
-      },
     },
     {
       name: 'publishedDate',
@@ -115,6 +86,18 @@ export const Resources: CollectionConfig = {
       },
     },
   ],
+  // Move hooks here - at the COLLECTION level
+  hooks: {
+    afterChange: [
+      ...createBidirectionalHooks([
+        {
+          relationshipField: 'relatedResourceCategory',
+          targetCollection: 'resource-categories',
+          targetField: 'relatedResources',
+        },
+      ]),
+    ],
+  },
   versions: {
     drafts: {
       autosave: {

@@ -31,6 +31,7 @@ import { CaseStudiesGrid } from '@/blocks/CaseStudiesGrid/config'
 import { IndustryRowBlock } from '@/blocks/IndustryRowBlock/config'
 import { InquiriesBlock } from '@/blocks/InquiriesBlock/config'
 import { canDeleteContent } from '@/access/roles'
+import { CareerRowBlock } from '@/blocks/CareerRowBlock/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -99,6 +100,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 CaseStudiesGrid,
                 IndustryRowBlock,
                 InquiriesBlock,
+                CareerRowBlock,
               ],
               required: true,
               admin: {

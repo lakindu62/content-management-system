@@ -21,6 +21,7 @@ import { Resources } from './collections/Resources'
 import { Industries } from './collections/industries'
 import { Company } from './constants/Company/config'
 import { ResourceCategories } from './collections/ResourceCategory/config'
+import { Careers } from './collections/careers'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -84,6 +85,7 @@ export default buildConfig({
     Resources,
     Industries,
     ResourceCategories,
+    Careers,
   ],
   cors: [
     getServerSideURL(),

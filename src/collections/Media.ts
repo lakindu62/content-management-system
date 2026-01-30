@@ -75,6 +75,6 @@ export const Media: CollectionConfig = {
         crop: 'center',
       },
     ],
-    mimeTypes: ['image/*', 'application/pdf'],
+    mimeTypes: ['image/*', 'application/pdf', 'video/*'],
   },
 }

@@ -113,7 +113,12 @@ export const hero: Field = {
 
     {
       name: 'heroTitle',
-      type: 'text',
+      type: 'richText',
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          return [...rootFeatures, HeadingFeature({ enabledHeadingSizes: ['h1'] })]
+        },
+      }),
       admin: {
         condition: (_, { type } = {}) => ['caseStudyHero', 'lowImpactType02'].includes(type),
       },
