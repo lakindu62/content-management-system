@@ -110,6 +110,73 @@ export const Company: GlobalConfig = {
             },
           ],
         },
+        {
+          label: 'Testimonials',
+          fields: [
+            {
+              name: 'testimonials',
+              type: 'array',
+              label: 'Testimonials',
+              labels: {
+                singular: 'Testimonial',
+                plural: 'Testimonials',
+              },
+              fields: [
+                {
+                  name: 'quote',
+                  type: 'textarea',
+                  required: true,
+                  label: 'Testimonial Quote',
+                  admin: {
+                    description: 'The testimonial text from the client',
+                  },
+                },
+                {
+                  name: 'authorName',
+                  type: 'text',
+                  required: true,
+                  label: 'Author Name',
+                  admin: {
+                    description: 'e.g., Andrew McKee',
+                  },
+                },
+                {
+                  name: 'authorTitle',
+                  type: 'text',
+                  required: true,
+                  label: 'Author Title',
+                  admin: {
+                    description: 'e.g., CIO, Co-founder & CEO, D.CEO',
+                  },
+                },
+                {
+                  name: 'authorImage',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: false,
+                  label: 'Author Image',
+                  admin: {
+                    description: 'Optional: Author profile photo (circular image)',
+                  },
+                },
+                {
+                  name: 'companyLogo',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: false,
+                  label: 'Company Logo',
+                  admin: {
+                    description: 'Optional: Company/Organization logo',
+                  },
+                },
+              ],
+              admin: {
+                initCollapsed: true,
+                useAsTitle: 'authorName',
+              },
+            },
+          ],
+        },
       ],
     },
   ],

@@ -34,11 +34,12 @@ interface CustomFieldProps {
 }
 
 const ImageValidationAfterField: React.FC<CustomFieldProps> = (props) => {
-  console.log('🚀 ~ CustomField ~ props:', props)
   const { value } = useField({ path: props.path })
   const [validationError, setValidationError] = useState<string | null>(null)
   const [validating, setValidating] = useState(false)
-  const [validationStatus, setValidationStatus] = useState<'idle' | 'valid' | 'invalid'>('idle')
+  const [validationStatus, setValidationStatus] = useState<
+    'idle' | 'valid' | 'invalid' | 'valid-isVideo'
+  >('idle')
 
   // Validate whenever the value changes
   useEffect(() => {
@@ -66,6 +67,12 @@ const ImageValidationAfterField: React.FC<CustomFieldProps> = (props) => {
               props.field.admin?.custom.imageValidationConfig,
             )
 
+            if (result.valid && result.isVideo) {
+              setValidationStatus('valid-isVideo')
+              setValidationError(null)
+              return
+            }
+
             if (!result.valid) {
               setValidationError(result.error || 'Validation failed')
               setValidationStatus('invalid')
@@ -92,10 +99,13 @@ const ImageValidationAfterField: React.FC<CustomFieldProps> = (props) => {
 
   return (
     <div style={{ padding: '1rem', border: '1px solid #e0e0e0', borderRadius: '4px' }}>
-      {validating && (
-        <div style={{ color: '#666', marginBottom: '0.5rem' }}>⏳ Validating images...</div>
-      )}
+      {validating && <div style={{ color: '#666', marginBottom: '0.5rem' }}>⏳ Validating</div>}
 
+      {validationStatus === 'valid-isVideo' && !validating && (
+        <div style={{ color: '#4caf50', marginBottom: '0.5rem' }}>
+          {/* Please make sure the video has the correct Dimensions */}
+        </div>
+      )}
       {validationStatus === 'valid' && !validating && (
         <div style={{ color: '#4caf50', marginBottom: '0.5rem' }}>
           ✓ Image meet all requirements

@@ -281,6 +281,11 @@ export interface Page {
         blockName?: string | null;
         blockType: 'careerRowBlock';
       }
+    | {
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'testimonialBlock';
+      }
   )[];
   meta?: {
     title?: string | null;
@@ -1726,6 +1731,12 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        testimonialBlock?:
+          | T
+          | {
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -2734,6 +2745,31 @@ export interface Company {
     instagram?: string | null;
     youtube?: string | null;
   };
+  testimonials?:
+    | {
+        /**
+         * The testimonial text from the client
+         */
+        quote: string;
+        /**
+         * e.g., Andrew McKee
+         */
+        authorName: string;
+        /**
+         * e.g., CIO, Co-founder & CEO, D.CEO
+         */
+        authorTitle: string;
+        /**
+         * Optional: Author profile photo (circular image)
+         */
+        authorImage?: (string | null) | Media;
+        /**
+         * Optional: Company/Organization logo
+         */
+        companyLogo?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2862,6 +2898,16 @@ export interface CompanySelect<T extends boolean = true> {
         linkedin?: T;
         instagram?: T;
         youtube?: T;
+      };
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        authorName?: T;
+        authorTitle?: T;
+        authorImage?: T;
+        companyLogo?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

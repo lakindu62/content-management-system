@@ -32,6 +32,7 @@ import { IndustryRowBlock } from '@/blocks/IndustryRowBlock/config'
 import { InquiriesBlock } from '@/blocks/InquiriesBlock/config'
 import { canDeleteContent } from '@/access/roles'
 import { CareerRowBlock } from '@/blocks/CareerRowBlock/config'
+import { TestimonialBock } from '@/blocks/TestimonialBlock/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -101,6 +102,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 IndustryRowBlock,
                 InquiriesBlock,
                 CareerRowBlock,
+                TestimonialBock,
               ],
               required: true,
               admin: {
